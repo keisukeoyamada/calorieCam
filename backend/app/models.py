@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, TIMESTAMP, Text, Enum
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Text, Enum
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from .database import Base
@@ -16,7 +16,7 @@ class User(Base):
     username = Column(String(255), unique=True, index=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
     daily_calorie_limit = Column(Integer, nullable=False, server_default="2000")
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     meals = relationship("Meal", back_populates="owner")
 
@@ -29,6 +29,6 @@ class Meal(Base):
     image_path = Column(String(255), nullable=False)
     calories = Column(Integer, nullable=False)
     description = Column(Text, nullable=True)
-    created_at = Column(TIMESTAMP, server_default=func.now())
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     owner = relationship("User", back_populates="meals")

@@ -1,6 +1,6 @@
 import json
 import shutil
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import google.generativeai as genai
@@ -113,8 +113,8 @@ def get_today_meals(
     必要に応じて、食事の概要をリクエストされた言語に翻訳する
     """
     today = date.today()
-    start_of_day = datetime.combine(today, datetime.min.time())
-    end_of_day = datetime.combine(today, datetime.max.time())
+    start_of_day = datetime(today.year, today.month, today.day, 0, 0, 0, tzinfo=timezone.utc)
+    end_of_day = datetime(today.year, today.month, today.day, 23, 59, 59, 999999, tzinfo=timezone.utc)
 
     meals_from_db = crud.get_meals_by_user_and_date(
         db=db, user_id=current_user.id, start_date=start_of_day, end_date=end_of_day
