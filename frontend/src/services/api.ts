@@ -11,15 +11,24 @@ const api = axios.create({
   },
 });
 
-// リクエストインターセプターを追加して、認証トークンをヘッダーに含める
+// リクエストインターセプターを追加して、各種ヘッダーを付与する
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
+    // 認証トークンをヘッダーに含める
     const token = localStorage.getItem('token');
     if (token) {
       if (config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
+
+    // ブラウザの言語設定をAccept-Languageヘッダーに含める
+    if (typeof window !== 'undefined' && window.navigator) {
+        if (config.headers) {
+            config.headers['Accept-Language'] = navigator.language;
+        }
+    }
+
     return config;
   },
   (error: AxiosError) => {

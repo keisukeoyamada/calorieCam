@@ -7,7 +7,7 @@ import google.generativeai as genai
 from app import crud, models, schemas
 from app.core.config import settings
 from app.database import get_db
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, Form, Header, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from ..dependencies import get_current_user
@@ -42,6 +42,7 @@ def create_meal_and_analyze(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
     model: genai.GenerativeModel = Depends(get_gemini_model),
+    accept_language: str | None = Header(None),
 ):
     """
     食事の写真をアップロードし、カロリーを分析して記録する
@@ -63,11 +64,21 @@ def create_meal_and_analyze(
 
     # 2. Analyze with Gemini
     try:
+        # Determine language for the response
+        lang = "Japanese"  # Default
+        if accept_language:
+            primary_lang = accept_language.split(",")[0].split(";")[0].lower()
+            if primary_lang.startswith("ja"):
+                lang = "Japanese"
+            elif primary_lang.startswith("en"):
+                lang = "English"
+
         image_parts = [{"mime_type": file.content_type, "data": file_path.read_bytes()}]
-        prompt = """
+        prompt = f"""
         Analyze the food item in the image and estimate its total calories.
-        Respond in JSON format with two keys: 'description' (a brief, one-sentence description of the food) and 'calories' (an integer representing the estimated total calories).
-        Example: {"description": "A bowl of ramen and three gyoza dumplings.", "calories": 850}
+        Respond in JSON format with two keys: 'description' (a brief, one-sentence description of the food in {lang}) and 'calories' (an integer representing the estimated total calories).
+        Example for Japanese: {{\"description\": \"ラーメン一杯と餃子3個\", \"calories\": 850}}
+        Example for English: {{\"description\": \"A bowl of ramen and three gyoza dumplings.\", \"calories\": 850}}
         """
         response = model.generate_content([prompt, *image_parts])
 
@@ -89,13 +100,48 @@ def create_meal_and_analyze(
     return db_meal
 
 
+
 @router.get("/today", response_model=list[schemas.Meal])
-def get_today_meals(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_today_meals(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+    model: genai.GenerativeModel = Depends(get_gemini_model),
+    accept_language: str | None = Header(None),
+):
     """
     今日の食事記録をすべて取得する
+    必要に応じて、食事の概要をリクエストされた言語に翻訳する
     """
     today = date.today()
     start_of_day = datetime.combine(today, datetime.min.time())
     end_of_day = datetime.combine(today, datetime.max.time())
 
-    return crud.get_meals_by_user_and_date(db=db, user_id=current_user.id, start_date=start_of_day, end_date=end_of_day)
+    meals_from_db = crud.get_meals_by_user_and_date(
+        db=db, user_id=current_user.id, start_date=start_of_day, end_date=end_of_day
+    )
+
+    # Determine target language
+    target_lang = "English"
+    if accept_language:
+        primary_lang = accept_language.split(",")[0].split(";")[0].lower()
+        if primary_lang.startswith("ja"):
+            target_lang = "Japanese"
+
+    # Only perform translation if the target language is Japanese
+    if target_lang == "Japanese":
+        for meal in meals_from_db:
+            try:
+                # This prompt is idempotent. Translating Japanese text to Japanese will return the original text.
+                prompt = f"Translate the following food description to Japanese. Respond with only the translated text, without any introductory phrases. Description: '{meal.description}'"
+                response = model.generate_content(prompt)
+                
+                # Clean up the response, removing potential markdown or quotes
+                translated_description = response.text.strip().replace("`", "").replace('"', "")
+                
+                meal.description = translated_description
+            except Exception as e:
+                print(f"Warning: Could not translate description for meal {meal.id}: {e}")
+                # If translation fails, we proceed with the original description
+                pass
+
+    return meals_from_db
