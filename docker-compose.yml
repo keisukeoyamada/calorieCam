@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:10.6
+    container_name: mariadb_db
+    environment:
+      MARIADB_ROOT_PASSWORD: root_password # 本番環境ではより複雑なパスワードに変更してください
+      MARIADB_DATABASE: app_db
+      MARIADB_USER: user
+      MARIADB_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql # データベースのデータを永続化
+    ports:
+      - "3306:3306" # ローカルからのDBアクセス用（本番環境では不要な場合が多い）
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    container_name: caloriecam_backend
+    # DockerfileのCMDを上書きして、開発中に自動リロードを有効にする場合は以下を使用
+    # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./backend/app/uploads:/app/uploads # 画像アップロードの永続化
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: mysql+pymysql://user:password@db/app_db
+      SECRET_KEY: your_super_secret_jwt_key # 本番環境では強力な秘密鍵に変更してください
+      GEMINI_API_KEY: ${GEMINI_API_KEY} # ホストの環境変数または.envファイルから読み込む
+    depends_on:
+      db:
+        condition: service_healthy # DBサービスが正常に起動するまで待機
+
+  frontend:
+    build: ./frontend
+    container_name: caloriecam_frontend
+    ports:
+      - "3000:80" # Map host port 3000 to container port 80
+    depends_on:
+      - backend # Frontend depends on backend for API calls
+
+volumes:
+  db_data:

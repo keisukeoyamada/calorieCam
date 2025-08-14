@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy
+PyMySQL
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+google-generativeai
+python-dotenv
