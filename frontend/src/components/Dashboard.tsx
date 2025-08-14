@@ -73,54 +73,107 @@ const Dashboard: React.FC = () => {
       padding: '20px',
       width: '90%',
       margin: '20px auto',
-      backgroundColor: 'white',
+      backgroundColor: '#F8F9FA',
       borderRadius: '8px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
       boxSizing: 'border-box'
     }}>
-      <h2 style={{ textAlign: 'center', color: '#333' }}>今日のダッシュボード（{formattedDate}）</h2>
+      <h2 style={{ textAlign: 'center', color: '#3C4043', marginBottom: '30px' }}>
+        今日のダッシュボード（{formattedDate}）
+      </h2>
 
-      <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '30px', flexWrap: 'wrap' }}>
-        <div style={{ textAlign: 'center', padding: '15px', border: '1px solid #eee', borderRadius: '8px', minWidth: '180px', margin: '10px' }}>
-          <h3 style={{ color: '#007bff', margin: '0 0 10px 0' }}>目標カロリー</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '30px', flexWrap: 'wrap', gap: '20px' }}>
+        <div style={{
+          textAlign: 'center',
+          padding: '20px',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          minWidth: '180px',
+          flex: 1,
+          margin: '0'
+        }}>
+          <h3 style={{ color: '#4285F4', margin: '0 0 15px 0' }}>目標カロリー</h3>
           {isEditingLimit ? (
             <div>
               <input
                 type="number"
                 value={dailyCalorieLimit}
                 onChange={(e) => setDailyCalorieLimit(parseInt(e.target.value))}
-                style={{ width: '100px', padding: '5px', borderRadius: '4px', border: '1px solid #ddd' }}
+                style={{
+                  width: '100px',
+                  padding: '8px',
+                  borderRadius: '4px',
+                  border: '1px solid #E0E0E0',
+                  boxSizing: 'border-box'
+                }}
               /> kcal
-              <button onClick={handleUpdateLimit} style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>保存</button>
+              <button onClick={handleUpdateLimit} style={{
+                marginLeft: '10px',
+                padding: '8px 15px',
+                backgroundColor: '#34A853',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>保存</button>
             </div>
           ) : (
-            <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>
+            <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#3C4043' }}>
               {dailyCalorieLimit} kcal
-              <button onClick={() => setIsEditingLimit(true)} style={{ marginLeft: '10px', padding: '5px 10px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>編集</button>
+              <button onClick={() => setIsEditingLimit(true)} style={{
+                marginLeft: '10px',
+                padding: '8px 15px',
+                backgroundColor: '#5F6368',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}>編集</button>
             </p>
           )}
         </div>
 
-        <div style={{ textAlign: 'center', padding: '15px', border: '1px solid #eee', borderRadius: '8px', minWidth: '180px', margin: '10px' }}>
-          <h3 style={{ color: '#ffc107', margin: '0 0 10px 0' }}>摂取カロリー</h3>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>{totalCaloriesToday} kcal</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '20px',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          minWidth: '180px',
+          flex: 1,
+          margin: '0'
+        }}>
+          <h3 style={{ color: '#FBBC04', margin: '0 0 15px 0' }}>摂取カロリー</h3>
+          <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#3C4043' }}>{totalCaloriesToday} kcal</p>
         </div>
 
-        <div style={{ textAlign: 'center', padding: '15px', border: '1px solid #eee', borderRadius: '8px', minWidth: '180px', margin: '10px' }}>
-          <h3 style={{ color: remainingCalories >= 0 ? '#28a745' : '#dc3545', margin: '0 0 10px 0' }}>残りカロリー</h3>
-          <p style={{ fontSize: '24px', fontWeight: 'bold', color: remainingCalories >= 0 ? '#28a745' : '#dc3545' }}>{remainingCalories} kcal</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '20px',
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          minWidth: '180px',
+          flex: 1,
+          margin: '0'
+        }}>
+          <h3 style={{ color: remainingCalories >= 0 ? '#34A853' : '#EA4335', margin: '0 0 15px 0' }}>残りカロリー</h3>
+          <p style={{ fontSize: '28px', fontWeight: 'bold', color: remainingCalories >= 0 ? '#34A853' : '#EA4335' }}>{remainingCalories} kcal</p>
         </div>
       </div>
 
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+      {error && <p style={{ textAlign: 'center', color: '#EA4335' }}>{error}</p>}
 
       <MealUpload onMealUploaded={fetchTodayMeals} />
 
-      <h3 style={{ marginTop: '40px', marginBottom: '20px', color: '#333' }}>今日の食事記録</h3>
+      <h3 style={{ marginTop: '40px', marginBottom: '20px', color: '#3C4043' }}>今日の食事記録</h3>
       {loadingMeals ? (
-        <p style={{ textAlign: 'center' }}>食事記録を読み込み中...</p>
+        <p style={{ textAlign: 'center', color: '#5F6368' }}>食事記録を読み込み中...</p>
       ) : todayMeals.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>今日の食事記録はありません。</p>
+        <p style={{ textAlign: 'center', color: '#5F6368' }}>今日の食事記録はありません。</p>
       ) : (
         <MealList meals={todayMeals} onMealDeleted={handleMealDeleted} />
       )}

@@ -71,14 +71,17 @@ const MealHistory: React.FC = () => {
       padding: '20px',
       width: '90%',
       margin: '20px auto',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+      borderRadius: '8px',
+      backgroundColor: '#F8F9FA'
     }}>
-      <h2 style={{ textAlign: 'center', color: '#333' }}>食事の履歴</h2>
+      <h2 style={{ textAlign: 'center', color: '#3C4043', marginBottom: '30px' }}>食事の履歴</h2>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <Link to="/dashboard">ダッシュボードに戻る</Link>
+        <Link to="/dashboard" style={{ color: '#4285F4', textDecoration: 'none', fontWeight: 'bold' }}>ダッシュボードに戻る</Link>
       </div>
       {Object.keys(groupedMeals).length === 0 ? (
-        <p style={{ textAlign: 'center' }}>食事の記録はありません。</p>
+        <p style={{ textAlign: 'center', color: '#5F6368' }}>食事の記録はありません。</p>
       ) : (
         Object.entries(groupedMeals).map(([date, mealsOnDate]) => {
           const totalCalories = mealsOnDate.reduce((sum, meal) => sum + meal.calories, 0);
@@ -86,18 +89,25 @@ const MealHistory: React.FC = () => {
           const difference = calorieLimit - totalCalories;
 
           return (
-            <div key={date} style={{ marginBottom: '40px', padding: '20px', border: '1px solid #eee', borderRadius: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '10px', marginBottom: '20px' }}>
-                <h3 style={{ margin: 0 }}>{date}</h3>
+            <div key={date} style={{
+              marginBottom: '40px',
+              padding: '20px',
+              border: 'none',
+              borderRadius: '8px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+              backgroundColor: 'white'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E0E0E0', paddingBottom: '10px', marginBottom: '20px' }}>
+                <h3 style={{ margin: 0, color: '#3C4043' }}>{date}</h3>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#3C4043' }}>
                     合計: {totalCalories} kcal
                   </span>
                   <span style={{
                     marginLeft: '15px',
                     fontSize: '16px',
                     fontWeight: 'bold',
-                    color: difference < 0 ? '#dc3545' : '#28a745'
+                    color: difference < 0 ? '#EA4335' : '#34A853'
                   }}>
                     残り: {difference} kcal
                   </span>

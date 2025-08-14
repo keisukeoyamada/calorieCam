@@ -68,17 +68,32 @@ const MealUpload: React.FC<MealUploadProps> = ({ onMealUploaded }) => {
   };
 
   return (
-    <div style={{ border: '1px solid #eee', padding: '20px', borderRadius: '8px', marginBottom: '30px', backgroundColor: '#f9f9f9' }}>
-      <h3 style={{ textAlign: 'center', color: '#333', marginBottom: '20px' }}>食事を記録する</h3>
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
-      {success && <p style={{ color: 'green', textAlign: 'center' }}>{success}</p>}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+    <div style={{
+      border: 'none',
+      padding: '25px',
+      borderRadius: '8px',
+      marginBottom: '30px',
+      backgroundColor: 'white',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
+    }}>
+      <h3 style={{ textAlign: 'center', color: '#3C4043', marginBottom: '25px' }}>食事を記録する</h3>
+      {error && <p style={{ color: '#EA4335', textAlign: 'center', marginBottom: '15px' }}>{error}</p>}
+      {success && <p style={{ color: '#34A853', textAlign: 'center', marginBottom: '15px' }}>{success}</p>}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         <div>
-          <label style={{ display: 'block', marginBottom: '5px' }}>食事の種類:</label>
+          <label style={{ display: 'block', marginBottom: '8px', color: '#5F6368', fontWeight: 'bold' }}>食事の種類:</label>
           <select
             value={mealType}
             onChange={(e) => setMealType(e.target.value as 'breakfast' | 'lunch' | 'dinner')}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
+            style={{
+              width: '100%',
+              padding: '10px',
+              borderRadius: '4px',
+              border: '1px solid #E0E0E0',
+              backgroundColor: 'white',
+              boxSizing: 'border-box',
+              color: '#3C4043'
+            }}
           >
             <option value="breakfast">朝食</option>
             <option value="lunch">昼食</option>
@@ -86,7 +101,7 @@ const MealUpload: React.FC<MealUploadProps> = ({ onMealUploaded }) => {
           </select>
         </div>
         <div>
-          <label style={{ display: 'block', marginBottom: '5px' }}>写真:</label>
+          <label style={{ display: 'block', marginBottom: '8px', color: '#5F6368', fontWeight: 'bold' }}>写真:</label>
           {/* Hidden file input */}
           <input
             type="file"
@@ -97,16 +112,44 @@ const MealUpload: React.FC<MealUploadProps> = ({ onMealUploaded }) => {
           />
           {/* Custom buttons */}
           <div style={{ display: 'flex', gap: '10px' }}>
-            <button type="button" onClick={() => triggerFileInput(true)} style={{ flex: 1, padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: 'white', color: '#333', cursor: 'pointer' }}>
+            <button type="button" onClick={() => triggerFileInput(true)} style={{
+              flex: 1,
+              padding: '12px',
+              border: '1px solid #E0E0E0',
+              borderRadius: '4px',
+              backgroundColor: 'white',
+              color: '#5F6368',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
               カメラで撮影
             </button>
-            <button type="button" onClick={() => triggerFileInput(false)} style={{ flex: 1, padding: '10px', border: '1px solid #ddd', borderRadius: '4px', backgroundColor: 'white', color: '#333', cursor: 'pointer' }}>
+            <button type="button" onClick={() => triggerFileInput(false)} style={{
+              flex: 1,
+              padding: '12px',
+              border: '1px solid #E0E0E0',
+              borderRadius: '4px',
+              backgroundColor: 'white',
+              color: '#5F6368',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+            }}>
               ライブラリから選択
             </button>
           </div>
-          {selectedFile && <p style={{ marginTop: '10px', fontSize: '14px', color: '#555' }}>選択中のファイル: {selectedFile.name}</p>}
+          {selectedFile && <p style={{ marginTop: '15px', fontSize: '14px', color: '#5F6368' }}>選択中のファイル: {selectedFile.name}</p>}
         </div>
-        <button type="submit" disabled={loading || !selectedFile} style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>
+        <button type="submit" disabled={loading || !selectedFile} style={{
+          padding: '12px 25px',
+          backgroundColor: '#4285F4',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+        }}>
           {loading ? 'アップロード中...' : '記録して分析'}
         </button>
       </form>

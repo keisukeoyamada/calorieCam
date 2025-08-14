@@ -46,25 +46,52 @@ const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted, showImage = t
     }
   };
 
+  const formatDateTime = (utcDateTimeString: string) => {
+    // Check if the string already contains a timezone indicator (Z, +, or -)
+    const hasTimezone = utcDateTimeString.endsWith('Z') || utcDateTimeString.includes('+') || utcDateTimeString.includes('-');
+    // If not, append 'Z' to force UTC interpretation by new Date()
+    const dateToParse = hasTimezone ? utcDateTimeString : utcDateTimeString + 'Z';
+    
+    const date = new Date(dateToParse);
+    
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false, // Use 24-hour format
+    };
+    return date.toLocaleString('ja-JP', options);
+  };
+
   return (
     <>
-      {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
+      {error && <p style={{ color: '#EA4335', textAlign: 'center' }}>{error}</p>}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
         {meals.map((meal) => (
-          <div key={meal.id} style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', backgroundColor: 'white', position: 'relative' }}>
+          <div key={meal.id} style={{
+            border: 'none',
+            borderRadius: '8px',
+            overflow: 'hidden',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+            backgroundColor: 'white',
+            position: 'relative'
+          }}>
             {showImage && (
               <img
                 src={`http://localhost:8000/${meal.image_path.replace('/app/', '')}`}
                 alt={meal.description || 'Meal image'}
-                style={{ width: '100%', height: '200px', objectFit: 'cover', borderBottom: '1px solid #eee' }}
+                style={{ width: '100%', height: '200px', objectFit: 'cover', borderBottom: '1px solid #E0E0E0' }}
               />
             )}
             <div style={{ padding: '15px' }}>
-              <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>{getMealTypeLabel(meal.meal_type)}</h4>
-              <p style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#555' }}>{meal.description}</p>
-              <p style={{ margin: '0', fontSize: '16px', fontWeight: 'bold', color: '#007bff' }}>{meal.calories} kcal</p>
-              <p style={{ margin: '10px 0 0 0', fontSize: '12px', color: '#888' }}>
-                {new Date(meal.created_at).toLocaleString()}
+              <h4 style={{ margin: '0 0 10px 0', color: '#3C4043' }}>{getMealTypeLabel(meal.meal_type)}</h4>
+              <p style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#5F6368' }}>{meal.description}</p>
+              <p style={{ margin: '0', fontSize: '16px', fontWeight: 'bold', color: '#4285F4' }}>{meal.calories} kcal</p>
+              <p style={{ margin: '10px 0 0 0', fontSize: '12px', color: '#9AA0A6' }}>
+                {formatDateTime(meal.created_at)}
               </p>
             </div>
             <button
@@ -75,7 +102,7 @@ const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted, showImage = t
                 top: '10px',
                 right: '10px',
                 padding: '5px 8px',
-                backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                backgroundColor: '#EA4335',
                 color: 'white',
                 border: 'none',
                 borderRadius: '50%',
@@ -84,6 +111,7 @@ const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted, showImage = t
                 lineHeight: '1',
                 width: '28px',
                 height: '28px',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
               }}
             >
               {deleting === meal.id ? '...' : 'X'}
