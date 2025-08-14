@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { meals as apiMeals } from '../services/api'; // Renamed to avoid conflict
 
-interface Meal {
+export interface Meal {
   id: number;
   meal_type: 'breakfast' | 'lunch' | 'dinner';
   description: string;
@@ -10,12 +10,13 @@ interface Meal {
   created_at: string;
 }
 
-interface MealListProps {
+export interface MealListProps {
   meals: Meal[];
   onMealDeleted: (mealId: number) => void; // Callback function
+  showImage?: boolean;
 }
 
-const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted }) => {
+const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted, showImage = true }) => {
   const [deleting, setDeleting] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,11 +52,13 @@ const MealList: React.FC<MealListProps> = ({ meals, onMealDeleted }) => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '20px' }}>
         {meals.map((meal) => (
           <div key={meal.id} style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden', boxShadow: '0 2px 4px rgba(0,0,0,0.05)', backgroundColor: 'white', position: 'relative' }}>
-            <img
-              src={`http://localhost:8000/${meal.image_path.replace('/app/', '')}`}
-              alt={meal.description || 'Meal image'}
-              style={{ width: '100%', height: '200px', objectFit: 'cover', borderBottom: '1px solid #eee' }}
-            />
+            {showImage && (
+              <img
+                src={`http://localhost:8000/${meal.image_path.replace('/app/', '')}`}
+                alt={meal.description || 'Meal image'}
+                style={{ width: '100%', height: '200px', objectFit: 'cover', borderBottom: '1px solid #eee' }}
+              />
+            )}
             <div style={{ padding: '15px' }}>
               <h4 style={{ margin: '0 0 10px 0', color: '#333' }}>{getMealTypeLabel(meal.meal_type)}</h4>
               <p style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#555' }}>{meal.description}</p>

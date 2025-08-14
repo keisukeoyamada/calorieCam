@@ -53,6 +53,9 @@ def get_meals_by_user_and_date(db: Session, user_id: int, start_date: datetime, 
         models.Meal.created_at < end_date
     ).order_by(models.Meal.created_at.desc()).all()
 
+def get_all_meals_by_user(db: Session, user_id: int):
+    return db.query(models.Meal).filter(models.Meal.user_id == user_id).order_by(models.Meal.created_at.desc()).all()
+
 def delete_meal(db: Session, meal_id: int, user_id: int) -> models.Meal | None:
     """
     Deletes a meal from the database and its associated image file.

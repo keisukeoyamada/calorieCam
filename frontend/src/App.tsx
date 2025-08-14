@@ -4,6 +4,7 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Header from './components/Header';
+import MealHistory from './components/MealHistory';
 
 const AppContent: React.FC = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -17,9 +18,11 @@ const AppContent: React.FC = () => {
       <Header />
       <main>
         <Routes>
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Auth />} />
-          <Route path="/" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
-          <Route path="*" element={<Navigate to="/" />} /> {/* 未知のパスはリダイレクト */}
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />} />
+          <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} />
+          <Route path="/history" element={isAuthenticated ? <MealHistory /> : <Navigate to="/login" />} />
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/dashboard" />} />
         </Routes>
       </main>
     </>

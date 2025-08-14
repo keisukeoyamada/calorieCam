@@ -70,6 +70,7 @@ export const meals = {
   },
   getTodayMeals: () => api.get('/meals/today'),
   deleteMeal: (mealId: number) => api.delete(`/meals/${mealId}`),
+  getMealHistory: () => api.get('/meals/history'),
 };
 
 export default api;

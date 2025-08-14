@@ -146,6 +146,46 @@ def get_today_meals(
 
     return meals_from_db
 
+
+@router.get("/history", response_model=list[schemas.Meal])
+def get_meal_history(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+    model: genai.GenerativeModel = Depends(get_gemini_model),
+    accept_language: str | None = Header(None),
+):
+    """
+    すべての食事記録を履歴として取得する
+    必要に応じて、食事の概要をリクエストされた言語に翻訳する
+    """
+    meals_from_db = crud.get_all_meals_by_user(db=db, user_id=current_user.id)
+
+    # Determine target language
+    target_lang = "English"
+    if accept_language:
+        primary_lang = accept_language.split(",")[0].split(";")[0].lower()
+        if primary_lang.startswith("ja"):
+            target_lang = "Japanese"
+
+    # Only perform translation if the target language is Japanese
+    if target_lang == "Japanese":
+        for meal in meals_from_db:
+            try:
+                # This prompt is idempotent. Translating Japanese text to Japanese will return the original text.
+                prompt = f"Translate the following food description to Japanese. Respond with only the translated text, without any introductory phrases. Description: '{meal.description}'"
+                response = model.generate_content(prompt)
+                
+                # Clean up the response, removing potential markdown or quotes
+                translated_description = response.text.strip().replace("`", "").replace('"', "")
+                
+                meal.description = translated_description
+            except Exception as e:
+                print(f"Warning: Could not translate description for meal {meal.id}: {e}")
+                # If translation fails, we proceed with the original description
+                pass
+
+    return meals_from_db
+
 @router.delete("/{meal_id}", response_model=schemas.Meal)
 def delete_meal_endpoint(
     meal_id: int,
