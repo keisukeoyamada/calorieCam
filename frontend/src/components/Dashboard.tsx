@@ -57,6 +57,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
+  const handleMealDeleted = (mealId: number) => {
+    setTodayMeals(prevMeals => prevMeals.filter(meal => meal.id !== mealId));
+  };
+
   return (
     <div style={{ padding: '20px', maxWidth: '900px', margin: '20px auto', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
       <h2 style={{ textAlign: 'center', color: '#333' }}>今日のダッシュボード</h2>
@@ -103,7 +107,7 @@ const Dashboard: React.FC = () => {
       ) : todayMeals.length === 0 ? (
         <p style={{ textAlign: 'center' }}>今日の食事記録はありません。</p>
       ) : (
-        <MealList meals={todayMeals} />
+        <MealList meals={todayMeals} onMealDeleted={handleMealDeleted} />
       )}
     </div>
   );

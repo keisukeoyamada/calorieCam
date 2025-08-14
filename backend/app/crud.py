@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from . import models, schemas
 from .core.security import get_password_hash
+from pathlib import Path
 
 # --- User CRUD ---
 
@@ -51,3 +52,38 @@ def get_meals_by_user_and_date(db: Session, user_id: int, start_date: datetime, 
         models.Meal.created_at >= start_date,
         models.Meal.created_at < end_date
     ).order_by(models.Meal.created_at.desc()).all()
+
+def delete_meal(db: Session, meal_id: int, user_id: int) -> models.Meal | None:
+    """
+    Deletes a meal from the database and its associated image file.
+    Ensures that a user can only delete their own meals.
+    """
+    # First, get the meal to ensure it exists and belongs to the user
+    db_meal = db.query(models.Meal).filter(
+        models.Meal.id == meal_id,
+        models.Meal.user_id == user_id
+    ).first()
+
+    if not db_meal:
+        return None
+
+    # Get the image path before deleting the DB record
+    image_path_str = db_meal.image_path
+    
+    # Delete the meal record from the database
+    db.delete(db_meal)
+    db.commit()
+
+    # Delete the associated image file
+    if image_path_str:
+        try:
+            # The image_path is stored as an absolute path within the container
+            file_path = Path(image_path_str)
+            if file_path.exists():
+                file_path.unlink()
+        except Exception as e:
+            # Log the error, but don't block the operation.
+            # The DB record is already deleted.
+            print(f"Error deleting file {image_path_str}: {e}")
+
+    return db_meal

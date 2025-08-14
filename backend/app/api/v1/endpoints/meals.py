@@ -145,3 +145,17 @@ def get_today_meals(
                 pass
 
     return meals_from_db
+
+@router.delete("/{meal_id}", response_model=schemas.Meal)
+def delete_meal_endpoint(
+    meal_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    """
+    特定の食事記録を削除する
+    """
+    deleted_meal = crud.delete_meal(db=db, meal_id=meal_id, user_id=current_user.id)
+    if not deleted_meal:
+        raise HTTPException(status_code=404, detail="Meal not found or you do not have permission to delete it.")
+    return deleted_meal

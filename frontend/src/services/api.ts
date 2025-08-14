@@ -69,6 +69,7 @@ export const meals = {
     });
   },
   getTodayMeals: () => api.get('/meals/today'),
+  deleteMeal: (mealId: number) => api.delete(`/meals/${mealId}`),
 };
 
 export default api;
