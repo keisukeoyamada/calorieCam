@@ -69,7 +69,15 @@ const Dashboard: React.FC = () => {
   });
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '20px auto', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+    <div style={{
+      padding: '20px',
+      width: '90%',
+      margin: '20px auto',
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+      boxSizing: 'border-box'
+    }}>
       <h2 style={{ textAlign: 'center', color: '#333' }}>今日のダッシュボード（{formattedDate}）</h2>
 
       <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '30px', flexWrap: 'wrap' }}>

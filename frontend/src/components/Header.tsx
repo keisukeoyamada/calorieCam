@@ -19,7 +19,7 @@ const Header: React.FC = () => {
         <Link to="/dashboard" style={{ textDecoration: 'none', color: 'inherit' }}>CalorieCam</Link>
       </h1>
       {user && (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
           <Link to="/history" style={{ marginRight: '15px', color: '#007bff', textDecoration: 'none' }}>食事履歴</Link>
           <span style={{ marginRight: '15px', color: '#555' }}>ようこそ、{user.username}さん！</span>
           <button

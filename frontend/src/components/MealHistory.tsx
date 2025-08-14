@@ -67,7 +67,12 @@ const MealHistory: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '900px', margin: '20px auto' }}>
+    <div style={{
+      padding: '20px',
+      width: '90%',
+      margin: '20px auto',
+      boxSizing: 'border-box'
+    }}>
       <h2 style={{ textAlign: 'center', color: '#333' }}>食事の履歴</h2>
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <Link to="/dashboard">ダッシュボードに戻る</Link>
