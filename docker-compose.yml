@@ -42,6 +42,9 @@ services:
     container_name: caloriecam_frontend
     ports:
       - "3000:80" # Map host port 3000 to container port 80
+      - "3001:443" # Map host port 3001 to container port 443 for HTTPS
+    volumes:
+      - ./frontend/certs:/etc/nginx/certs # Mount the certs directory
     depends_on:
       - backend # Frontend depends on backend for API calls
 
