@@ -22,6 +22,7 @@ services:
   backend:
     build: ./backend
     container_name: caloriecam_backend
+    restart: unless-stopped
     # DockerfileのCMDを上書きして、開発中に自動リロードを有効にする場合は以下を使用
     # command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --log-level debug
@@ -40,6 +41,7 @@ services:
   frontend:
     build: ./frontend
     container_name: caloriecam_frontend
+    restart: unless-stopped
     ports:
       - "3000:80" # Map host port 3000 to container port 80
       - "3001:443" # Map host port 3001 to container port 443 for HTTPS
